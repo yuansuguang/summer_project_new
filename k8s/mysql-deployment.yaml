@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mycontainer-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mycontainer
+  template:
+    metadata:
+      labels:
+        app: mycontainer
+    spec:
+      containers:
+      - name: mycontainer
+        image: glj/database:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 350305Glj
+        ports:
+        - containerPort: 3306

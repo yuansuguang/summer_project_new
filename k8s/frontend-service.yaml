@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-frontend-app-service
+spec:
+  selector:
+    app: my-frontend-app
+  ports:
+  - protocol: TCP
+    port: 3000     # 服务端口
+    targetPort: 8080 # 容器端口
+  type: LoadBalancer     
