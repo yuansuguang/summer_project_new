@@ -149,4 +149,51 @@ def survey_link(request):
 
 # Create your views here.
 
+#获取问卷信息接口
+@csrf_exempt
+def get_survey_detail(request):
+    if not request.session.get('is_login'):
+        return JsonResponse({'status_code': 401})
+    
+    if request.method == 'GET':
+        try:
+            survey_id = request.session.get('survey_id')
+            survey = Survey.objects.get(survey_id = survey_id)
+            survey_data = {
+                "survey_id": survey.survey_id,
+                "survey_title": survey.survey_title,
+                "survey_description": survey.survey_description,
+                "survey_type": survey.survey_type,
+                "survey_code": survey.share_code,
+                "submission_num": survey.submission_num,
+                "survey_deadline": survey.deadline,
+            }
+            return JsonResponse(survey_data)
+        
+        except Survey.DoesNotExist:
+            return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
 
+#通过share code获取问卷信息接口
+@csrf_exempt
+def get_survey_detail_code(request):
+    if not request.session.get('is_login'):
+        return JsonResponse({'status_code': 401})
+    
+    if request.method == 'GET':
+        try:
+            code = request.session.get('code')
+            survey = Survey.objects.get(share_code = code)
+            survey_data = {
+                "survey_id": survey.survey_id,
+                "survey_title": survey.survey_title,
+                "survey_description": survey.survey_description,
+                "survey_type": survey.survey_type,
+                "survey_code": survey.share_code,
+                "submission_num": survey.submission_num,
+                "survey_deadline": survey.deadline,
+                "max_submission_num": survey.max_submission
+            }
+            return JsonResponse(survey_data)
+        
+        except Survey.DoesNotExist:
+            return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
