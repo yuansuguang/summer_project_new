@@ -13,7 +13,7 @@ from collections import Counter
 from django.utils import timezone
 from django.utils.timezone import make_aware
 
-
+import requests
 import json
 import datetime
 
@@ -40,23 +40,34 @@ def submit_survey(request):
                 return JsonResponse({'status_code': 2, 'message': r'Incomplete data provided.'})
 
             # 获取问卷信息
-            try:
-                survey = Survey.objects.get(share_code=code)
-            except Survey.DoesNotExist:
+            # try:
+            survey_url_code = f""
+            response = requests.get(survey_url_code)
+            if response.status_code != 200:
                 return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+            survey_detail = response.json()
+            #     survey = Survey.objects.get(share_code=code)
+            # except Survey.DoesNotExist:
+            #     return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
 
-            # 检查是否达到最大提交次数
-            if survey.submission_num >= survey.max_submission:
+            if survey_detail['submission_num'] >= survey_detail['submission_num']:
                 return JsonResponse({'status_code': 4, 'message': r'Survey submission limit reached.'})
+            # 检查是否达到最大提交次数
+            # if survey.submission_num >= survey.max_submission:
+            #     return JsonResponse({'status_code': 4, 'message': r'Survey submission limit reached.'})
             
             # 检查问卷是否在可提交时间范围内
             now = timezone.now()
-            if survey.deadline is not None and now > survey.deadline:
+            if survey_detail['deadline'] is not None and now > survey_detail['deadline']:
                 return JsonResponse({'status_code': 5, 'message': r'Survey deadline exceeded.'})
+            # if survey.deadline is not None and now > survey.deadline:
+            #     return JsonResponse({'status_code': 5, 'message': r'Survey deadline exceeded.'})
             
             # 检查用户是否已经提交过该问卷
-            if survey.survey_type != '1' and username != "visitor" and Survey_submit.objects.filter(survey_id=survey, username=username, is_submitted=True).exists():
+            if survey_detail['survey_type'] != '1' and username != "visitor" and Survey_submit.objects.filter(survey_id=survey_detail['survey_id'], username=username, is_submitted=True).exists():
                 return JsonResponse({'status_code': 6, 'message': r'User has already submitted this survey.'})
+            # if survey.survey_type != '1' and username != "visitor" and Survey_submit.objects.filter(survey_id=survey, username=username, is_submitted=True).exists():
+            #     return JsonResponse({'status_code': 6, 'message': r'User has already submitted this survey.'})
             
             # # 获取用户 IP 地址
             # user_ip = get_client_ip(request)  # 最后定义 get_client_ip 函数
@@ -74,16 +85,16 @@ def submit_survey(request):
             # 创建新的问卷提交记录
             if username != "visitor":
                 try:
-                    survey_submit = Survey_submit.objects.get(survey_id=survey, username=username)
+                    survey_submit = Survey_submit.objects.get(survey_id=survey_detail['survey_id'], username=username)
                 except:
                     survey_submit = Survey_submit.objects.create(
-                        survey_id=survey,
+                        survey_id=survey_detail['survey_id'],
                         username=username,
                         survey_submit_time=make_aware(datetime.datetime.now())
                     )
             else:
                 survey_submit = Survey_submit.objects.create(
-                        survey_id=survey,
+                        survey_id=survey_detail['survey_id'],
                         username=username,
                         survey_submit_time=make_aware(datetime.datetime.now())
                     )
@@ -134,8 +145,9 @@ def submit_survey(request):
             survey_submit.is_submitted = True
             survey_submit.save()
             #更新问卷提交次数
-            survey.submission_num += 1
-            survey.save()
+            # survey.submission_num += 1
+            # survey.save()
+            #TODO:在survey中增加POST接口以改变填写次数
 
             # 返回成功响应
             return JsonResponse({'status_code': 1, 'message': r'Survey submitted successfully.'})
@@ -174,10 +186,16 @@ def save_survey(request):
                 return JsonResponse({'status_code': 2, 'message': r'Incomplete data provided.'})
 
             # 获取问卷信息
-            try:
-                survey = Survey.objects.get(share_code=code)
-            except Survey.DoesNotExist:
+            # try:
+            #     survey = Survey.objects.get(share_code=code)
+            # except Survey.DoesNotExist:
+            #     return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+
+            survey_url_code = f""
+            response = requests.get(survey_url_code)
+            if response.status_code != 200:
                 return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+            survey_detail = response.json()
 
             # # 检查是否达到最大提交次数
             # if survey.submission_num >= survey.max_submission:
@@ -185,10 +203,14 @@ def save_survey(request):
             
             # 检查问卷是否在可提交时间范围内
             now = timezone.now()
-            if survey.deadline is not None and now > survey.deadline:
-                return JsonResponse({'status_code': 4, 'message': r'Survey deadline exceeded.'})
+            if survey_detail['deadline'] is not None and now > survey_detail['deadline']:
+                return JsonResponse({'status_code': 5, 'message': r'Survey deadline exceeded.'})
+            # if survey.deadline is not None and now > survey.deadline:
+            #     return JsonResponse({'status_code': 4, 'message': r'Survey deadline exceeded.'})
             
             # # 检查用户是否已经提交过该问卷
+            if survey_detail['survey_type'] != '1' and username != "visitor" and Survey_submit.objects.filter(survey_id=survey_detail['survey_id'], username=username, is_submitted=True).exists():
+                return JsonResponse({'status_code': 6, 'message': r'User has already submitted this survey.'})
             # if Survey_submit.objects.filter(survey_id=survey, username=username, is_submitted=True).exists():
             #     return JsonResponse({'status_code': 6, 'message': r'User has already submitted this survey.'})
             
@@ -207,10 +229,10 @@ def save_survey(request):
             
             # 创建新的问卷提交记录
             try:
-                survey_submit = Survey_submit.objects.get(survey_id=survey, username=username)
+                survey_submit = Survey_submit.objects.get(survey_id=survey_detail['survey_id'], username=username)
             except:
                 survey_submit = Survey_submit.objects.create(
-                    survey_id=survey,
+                    survey_id=survey_detail['survey_id'],
                     username=username,
                     survey_submit_time=make_aware(datetime.datetime.now())
                 )
@@ -286,18 +308,26 @@ def clear_survey(request):
             if form.is_valid():
                 survey_id = form.cleaned_data.get('survey_id')
                 # 获取问卷信息
-                try:
-                    survey = Survey.objects.get(survey_id=survey_id)
-                except Survey.DoesNotExist:
-                    return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
+                survey_url = f""
+                response = requests.get(survey_url)
+                if response.status_code != 200:
+                    return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+                survey_detail = response.json()
+                # try:
+                #     survey = Survey.objects.get(survey_id=survey_id)
+                # except Survey.DoesNotExist:
+                #     return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
 
                 # 删除该问卷的所有问题提交记录
-                Question_submit.objects.filter(survey_submit_id__survey_id=survey).delete()
+                Question_submit.objects.filter(survey_submit_id__survey_id=survey_detail['survey_id']).delete()
                 #survey_submit_id__survey_id=survey: 筛选条件，使用了 Django ORM 的双下划线 __ 语法进行关联查询
                 # 删除该问卷的所有问卷提交记录
-                Survey_submit.objects.filter(survey_id=survey).delete()
-                survey.submission_num = 0
-                survey.save()
+                Survey_submit.objects.filter(survey_id=survey_detail['survey_id']).delete()
+
+                #TODO: 在survey中增加POST接口以改变填写次数
+                # survey.submission_num = 0
+                # survey.save()
+                
                 return JsonResponse({'status_code': 1, 'message': r'Survey cleared successfully.'})
             else:
                 return JsonResponse({'status_code': 3, 'message': r'Invalid form data.'}) 
