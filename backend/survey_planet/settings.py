@@ -115,11 +115,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # 'NAME': 'survey_planet_test',
-        'NAME': 'survey_planet',
-        'HOST': 'mycontainer-service',
+        # 'NAME': 'survey_planet',
+        'NAME': 'summer_project',
+        'HOST': 'localhost',
         # 'HOST': 'survey_planet',
         # 'PORT': '3306',
-        'PORT': '3309',
+        'PORT': '3306',
         'USER': 'root',
         'PASSWORD': '350305Glj'
     }

@@ -327,7 +327,7 @@ def clear_survey(request):
                 #TODO: 在survey中增加POST接口以改变填写次数
                 # survey.submission_num = 0
                 # survey.save()
-                
+
                 return JsonResponse({'status_code': 1, 'message': r'Survey cleared successfully.'})
             else:
                 return JsonResponse({'status_code': 3, 'message': r'Invalid form data.'}) 
@@ -383,19 +383,26 @@ def get_survey_submissions(request):
         try:
             data = json.loads(request.body)
             survey_id = data.get('survey_id')
+            
             print(survey_id)
 
             if not survey_id:
                 return JsonResponse({'status_code': 2, 'message': 'Survey ID is required.'})
 
-            try:
-                survey = Survey.objects.get(survey_id=survey_id)
-            except Survey.DoesNotExist:
-                return JsonResponse({'status_code': 3, 'message': 'Survey not found.'})
+            # try:
+            #     survey = Survey.objects.get(survey_id=survey_id)
+            # except Survey.DoesNotExist:
+            #     return JsonResponse({'status_code': 3, 'message': 'Survey not found.'})
+            
+            survey_url = f""
+            response = requests.get(survey_url)
+            if response.status_code != 200:
+                return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+            survey_detail = response.json()
             
 
 
-            questions = Question.objects.filter(survey_id=survey_id)
+            questions = Question.objects.filter(survey_id=survey_detail['survey_id'])
             submissions_dict = {}  # 使用字典存储每个 submission_id 的答案
 
             for question in questions:
@@ -543,15 +550,20 @@ def get_user_submissions(request):
 
         response = []
         for submission in submissions:
-            survey = submission.survey_id
+            # survey = submission.survey_id
+            survey_url = f""
+            response = requests.get(survey_url)
+            if response.status_code != 200:
+                return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+            survey_detail = response.json()
             item = {'submitId': submission.survey_submit_id,
                     'creationDate': submission.survey_submit_time.strftime("%Y-%m-%d %H:%M"),
-                    'questionnaireId': survey.survey_id,
-                    'questionnaireName': survey.survey_title,
-                    'code': survey.share_code,
+                    'questionnaireId': survey_detail['survey_id'],
+                    'questionnaireName': survey_detail['survey_title'],
+                    'code': survey_detail['survey_code'],
                     'isSubmitted': submission.is_submitted,
                     'score': submission.survey_score,
-                    'type': survey.survey_type}
+                    'type': survey_detail['survey_type']}
             response.append(item)
         return JsonResponse({'status_code': 1, 'data': json.dumps(response, ensure_ascii=False)})
     
