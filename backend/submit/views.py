@@ -147,6 +147,10 @@ def submit_survey(request):
             #更新问卷提交次数
             # survey.submission_num += 1
             # survey.save()
+            add_submission_url = f""
+            response1 = requests.post(add_submission_url)
+            if response1.status_code != 1:
+                return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
             #TODO:在survey中增加POST接口以改变填写次数
 
             # 返回成功响应
@@ -327,6 +331,10 @@ def clear_survey(request):
                 #TODO: 在survey中增加POST接口以改变填写次数
                 # survey.submission_num = 0
                 # survey.save()
+                clear_submission_url = f""
+                response1 = requests.post(clear_submission_url)
+                if response1.status_code != 1:
+                    return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
 
                 return JsonResponse({'status_code': 1, 'message': r'Survey cleared successfully.'})
             else:

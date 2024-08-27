@@ -197,3 +197,35 @@ def get_survey_detail_code(request):
         
         except Survey.DoesNotExist:
             return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
+        
+@csrf_exempt
+def add_submission(request):
+    if not request.session.get('is_login'):
+        return JsonResponse({'status_code': 401})
+    
+    if request.method == 'POST':
+        try:
+            survey_id = request.session.get('survey_id')
+            survey = Survey.objects.get(survey_id = survey_id)
+            survey.submission_num += 1
+            survey.save()
+            return JsonResponse({'status_code': 1, 'message': r'add success.'})
+        
+        except Survey.DoesNotExist:
+            return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
+        
+@csrf_exempt
+def clear_submission(request):
+    if not request.session.get('is_login'):
+        return JsonResponse({'status_code': 401})
+    
+    if request.method == 'POST':
+        try:
+            survey_id = request.session.get('survey_id')
+            survey = Survey.objects.get(survey_id = survey_id)
+            survey.submission_num = 0
+            survey.save()
+            return JsonResponse({'status_code': 1, 'message': r'add success.'})
+        
+        except Survey.DoesNotExist:
+            return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
