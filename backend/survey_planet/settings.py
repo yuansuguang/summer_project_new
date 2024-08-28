@@ -122,7 +122,7 @@ DATABASES = {
         # 'PORT': '3306',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': '350305Glj'
+        'PASSWORD': 'wx216919'
     }
 }
 

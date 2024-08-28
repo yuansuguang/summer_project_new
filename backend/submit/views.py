@@ -402,29 +402,35 @@ def get_survey_submissions(request):
             # except Survey.DoesNotExist:
             #     return JsonResponse({'status_code': 3, 'message': 'Survey not found.'})
             
-            survey_url = f""
-            response = requests.get(survey_url)
+            get_questions_url = f""
+            response = requests.get(get_questions_url)
             if response.status_code != 200:
                 return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
-            survey_detail = response.json()
+            questions = response.json()
             
 
 
-            questions = Question.objects.filter(survey_id=survey_detail['survey_id'])
+            #questions = Question.objects.filter(survey_id=survey_detail['survey_id'])
+
             submissions_dict = {}  # 使用字典存储每个 submission_id 的答案
 
             for question in questions:
+                question_id=question['question_id']
                 question_submissions = Question_submit.objects.filter(
-                    question_id=question.question_id,
+                    question_id=question_id,
                     survey_submit_id__is_submitted=True
                 ).select_related('survey_submit_id')
+                # question_submissions = Question_submit.objects.filter(
+                #     question_id=question['question_id'],
+                #     survey_submit_id__is_submitted=True
+                # ).select_related('survey_submit_id')
 
                 for qs in question_submissions:
                     submission_id = qs.survey_submit_id.survey_submit_id
                     if submission_id not in submissions_dict:
                         submissions_dict[submission_id] = []  # 初始化为空列表
                     submissions_dict[submission_id].append({
-                        'question_description': question.question_description,
+                        'question_description': question['question_description'],
                         'answer': qs.answer
                     })
 
@@ -457,8 +463,13 @@ def get_question_statistics(request):
                 return JsonResponse({'status_code': 2, 'message': 'Question ID is required.'})
 
             # 获取问题类型
-            question = Question.objects.get(pk=question_id)
-            question_type = question.question_type
+            # question = Question.objects.get(pk=question_id)
+            get_details_url = f""
+            response = requests.get(get_details_url)
+            if response.status_code != 200:
+                return JsonResponse({'status_code': 3, 'message': r'Survey not found.'})
+            question = response.json()
+            question_type = question['question_type']
 
             # 获取已提交问卷的答案
             answers = Question_submit.objects.filter(
@@ -477,8 +488,14 @@ def get_question_statistics(request):
                 
                 print(option_counts)
 
+                get_options_url = f""
+                response = requests.get(get_options_url)
+                if response.status_code != 200:
+                    return JsonResponse({'status_code': 3, 'message': r'Question not found.'})
+                options = response.json()
+
                 # 获取所有选项
-                options = Option.objects.filter(question_id=question_id).values('option_id', 'option_description')
+                #options = Option.objects.filter(question_id=question_id).values('option_id', 'option_description')
 
                 # 将统计结果与选项描述合并
                 statistics = []

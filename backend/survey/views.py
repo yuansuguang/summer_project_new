@@ -151,13 +151,12 @@ def survey_link(request):
 
 #获取问卷信息接口
 @csrf_exempt
-def get_survey_detail(request):
-    if not request.session.get('is_login'):
-        return JsonResponse({'status_code': 401})
+def get_survey_detail(request, survey_id):
+    # if not request.session.get('is_login'):
+    #     return JsonResponse({'status_code': 401})
     
     if request.method == 'GET':
         try:
-            survey_id = request.session.get('survey_id')
             survey = Survey.objects.get(survey_id = survey_id)
             survey_data = {
                 "survey_id": survey.survey_id,
@@ -175,14 +174,13 @@ def get_survey_detail(request):
 
 #通过share code获取问卷信息接口
 @csrf_exempt
-def get_survey_detail_code(request):
-    if not request.session.get('is_login'):
-        return JsonResponse({'status_code': 401})
+def get_survey_detail_code(request, share_code):
+    # if not request.session.get('is_login'):
+    #     return JsonResponse({'status_code': 401})
     
     if request.method == 'GET':
         try:
-            code = request.session.get('code')
-            survey = Survey.objects.get(share_code = code)
+            survey = Survey.objects.get(share_code = share_code)
             survey_data = {
                 "survey_id": survey.survey_id,
                 "survey_title": survey.survey_title,
@@ -199,33 +197,31 @@ def get_survey_detail_code(request):
             return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
         
 @csrf_exempt
-def add_submission(request):
-    if not request.session.get('is_login'):
-        return JsonResponse({'status_code': 401})
+def add_submission(request, survey_id):
+    # if not request.session.get('is_login'):
+    #     return JsonResponse({'status_code': 401})
     
     if request.method == 'POST':
         try:
-            survey_id = request.session.get('survey_id')
             survey = Survey.objects.get(survey_id = survey_id)
             survey.submission_num += 1
             survey.save()
-            return JsonResponse({'status_code': 1, 'message': r'add success.'})
+            return JsonResponse({'status_code': 1, 'message': r'add success.', 'current_num': survey.submission_num})
         
         except Survey.DoesNotExist:
             return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})
         
 @csrf_exempt
-def clear_submission(request):
-    if not request.session.get('is_login'):
-        return JsonResponse({'status_code': 401})
+def clear_submission(request, survey_id):
+    # if not request.session.get('is_login'):
+    #     return JsonResponse({'status_code': 401})
     
     if request.method == 'POST':
         try:
-            survey_id = request.session.get('survey_id')
             survey = Survey.objects.get(survey_id = survey_id)
             survey.submission_num = 0
             survey.save()
-            return JsonResponse({'status_code': 1, 'message': r'add success.'})
+            return JsonResponse({'status_code': 1, 'message': r'add success.', 'current_num': survey.submission_num})
         
         except Survey.DoesNotExist:
             return JsonResponse({'status_code': 2, 'message': r'Survey not found.'})

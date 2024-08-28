@@ -645,3 +645,41 @@ def change_question_correct_answer(request):
         return JsonResponse({'status_code': 3, 'message': r'method error'})
 
     
+@csrf_exempt
+def get_questions(request, survey_id):
+    if request.method == 'GET':
+        if not survey_id:
+            return JsonResponse({'status_code': 2, 'message': r'Survey ID is required.'})
+
+        questions = Question.objects.filter(survey_id=survey_id)
+        questions_data = [
+            {
+                "question_id": question.question_id,
+                "question_description": question.question_description,
+                # 其他问题相关的字段
+            }
+            for question in questions
+        ]
+
+        return JsonResponse(questions_data, safe=False)
+
+    return JsonResponse({'status_code': 6, 'message': 'Method not allowed.'}, status=405)
+
+@csrf_exempt
+def get_details(request, question_id):
+    if request.method == 'GET':
+        if not question_id:
+            return JsonResponse({'status_code': 2, 'message': r'Question ID is required.'})
+        try:
+            question = Question.objects.get(question_id = question_id)
+            questions_details = {
+                "question_id": question.question_id,
+                "question_type": question.question_type,
+                "question_title": question.question_title,
+                "question_description": question.question_description
+            }
+            return JsonResponse(questions_details)
+        except Question.DoesNotExist: 
+            return JsonResponse({'status_code': 2, 'message': r'Question not found.'})
+
+    return JsonResponse({'status_code': 6, 'message': 'Method not allowed.'}, status=405)
