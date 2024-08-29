@@ -8,5 +8,6 @@ urlpatterns = [
     path('api/listquestionforpreview', views.list_question_forpreview, name='list_question_forpreview'),
     path('api/listquestionforanalysis', views.list_question_foranalysis, name='list_question_foranalysis'),
     path('api/getquestions/<int:survey_id>', views.get_questions, name='get_questions'),
-    path('api/getdetails/<int:question_id>', views.get_details, name='get_details')
+    path('api/getdetails/<int:question_id>', views.get_details, name='get_details'),
+    path('api/getoptions/<int:question_id>', views.get_options, name='get_options')
 ]

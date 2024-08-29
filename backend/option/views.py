@@ -147,22 +147,3 @@ def option_delete(request):
     else:
         return JsonResponse({'status_code': 3, 'message': r'Method error'})
     
-@csrf_exempt
-def get_options(request, question_id):
-    if request.method == 'GET':
-        if not question_id:
-            return JsonResponse({'status_code': 2, 'message': r'Survey ID is required.'})
-
-        options = Option.objects.filter(question_id = question_id)
-        options_data = [
-            {
-                "option_id": option.option_id,
-                "question_description": option.option_description
-                # 其他问题相关的字段
-            }
-            for option in options
-        ]
-
-        return JsonResponse(options_data, safe=False)
-
-    return JsonResponse({'status_code': 6, 'message': 'Method not allowed.'}, status=405)
