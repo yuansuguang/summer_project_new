@@ -82,7 +82,7 @@
                 || item.type === 'stuId'
                 || item.type === 'class'
                 || item.type === 'school'">
-                <el-input placeholder="请输入内容" v-model="answers[item.id - 1].ans">
+                <el-input placeholder="请输入内容" v-model="answers[item.id - 1].ans" style="z-index: 0;">
                 </el-input>
               </div>
 
@@ -108,7 +108,7 @@
                 <el-input v-if="item.row > 1" type="textarea" :autosize="{ minRows: 2, maxRows: item.row }"
                   placeholder="请输入内容" v-model="answers[item.id - 1].ans">
                 </el-input>
-                <el-input v-if="item.row === 1" placeholder="请输入内容" v-model="answers[item.id - 1].ans">
+                <el-input v-if="item.row === 1" placeholder="请输入内容" v-model="answers[item.id - 1].ans" style="z-index: 0px;">
                 </el-input>
               </div>
 

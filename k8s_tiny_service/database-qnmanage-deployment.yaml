@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qnmanage-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qnmanage-database
+  template:
+    metadata:
+      labels:
+        app: qnmanage-database
+    spec:
+      containers:
+      - name: qnmanage-database
+        image: backend/qnmanage_database:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 350305Glj
+        ports:
+        - containerPort: 3306

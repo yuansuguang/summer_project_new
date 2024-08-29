@@ -539,7 +539,6 @@ export default {
     search() {
       //这里是添加搜索方法的
       this.fetchQuestionnaires();
-
       console.log("Searching...");
     },
     updateSort1() {
@@ -755,6 +754,9 @@ export default {
             console.log("error 5");
             break;
           case -1:
+            break;
+          default:
+            console.log(res.data.status_code);
             break;
         }
       }).catch(err => {

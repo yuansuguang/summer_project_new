@@ -109,8 +109,14 @@
             break;
         }
 
-        console.log(formData);
-  
+        //console.log(formData);
+        // for (let pair of formData.entries()) {
+        //   console.log(pair[0]+ ', ' + pair[1]); 
+        // }
+
+        // 查看所有 cookies
+        console.log(document.cookie);
+
         this.$axios({
           method: 'post',
           url: '/surveymanage/api/createsurvey',

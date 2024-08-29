@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qnfill-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qnfill-database
+  template:
+    metadata:
+      labels:
+        app: qnfill-database
+    spec:
+      containers:
+      - name: qnfill-database
+        image: backend/qnfill_database:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 350305Glj
+        ports:
+        - containerPort: 3306

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-database
+  template:
+    metadata:
+      labels:
+        app: user-database
+    spec:
+      containers:
+      - name: user-database
+        image: backend/user_database:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 350305Glj
+        ports:
+        - containerPort: 3306

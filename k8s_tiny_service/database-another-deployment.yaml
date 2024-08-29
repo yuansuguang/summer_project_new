@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: another-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: another-database
+  template:
+    metadata:
+      labels:
+        app: another-database
+    spec:
+      containers:
+      - name: another-database
+        image: backend/qn_another_database:1.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 350305Glj
+        ports:
+        - containerPort: 3306

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bk-qnfill
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bk-qnfill
+  template:
+    metadata:
+      labels:
+        app: bk-qnfill
+    spec:
+      containers:
+      - name: bk-qnfill
+        image: tiny_service/qnfill:1.0
+        ports:
+        - containerPort: 8000

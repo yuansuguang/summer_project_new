@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bk-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bk-user
+  template:
+    metadata:
+      labels:
+        app: bk-user
+    spec:
+      containers:
+      - name: bk-user
+        image: tiny_service/user:1.0
+        ports:
+        - containerPort: 8000

@@ -140,6 +140,7 @@ export default {
         url: '/user/api/login/',
         data: formData,
       }).then(res => {
+        console.log(res.data.status_code);
         switch (res.data.status_code) {
           case 1:
             this.$store.dispatch('saveUserInfo', {
@@ -156,13 +157,18 @@ export default {
           case 3:
             break;
           case 4:
+            alert('请先在注册邮箱内激活登陆账号！');
             break;
           case 5:
             break;
           case -1:
             break;
+          default:
+            console.log(res.data.status_code);
+            break;
         }
       }).catch(err => {
+        console.log("请求失败！")
         console.log(err);
       });
       console.log('用户名：', this.loginForm.user);  // 修改为loginForm.user

@@ -69,10 +69,12 @@
         this.scrollingText = this.scrollingTexts[this.scrollingTextIndex];
       },
       gotologin() {
+        console.log(document.cookie);
         const userInfo = user.getters.getUser(user.state());
         console.log(userInfo);
         console.log(this.isLogin);
         if (userInfo) {
+          console.log(document.cookie);
           this.$router.push('questionairemanage');
         }
         else {

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bk-qnmanage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bk-qnmanage
+  template:
+    metadata:
+      labels:
+        app: bk-qnmanage
+    spec:
+      containers:
+      - name: bk-qnmanage
+        image: tiny_service/qnmanage:1.0
+        ports:
+        - containerPort: 8000

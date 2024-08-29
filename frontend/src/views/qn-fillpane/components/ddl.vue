@@ -112,6 +112,7 @@ export default {
         padding-bottom: 10px;
         padding-right: 15px;
         padding-left: 15px;
+        z-index: 9999;
     }
 
     .end {

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-container
+  template:
+    metadata:
+      labels:
+        app: frontend-container
+    spec:
+      containers:
+      - name: frontend-container
+        image: frontend/tiny_service:1.0
+        ports:
+        - containerPort: 8080

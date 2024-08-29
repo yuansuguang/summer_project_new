@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bk-qnmanage-service
+spec:
+  selector:
+    app: bk-qnmanage
+  ports:
+  - protocol: TCP
+    port: 8002       # 服务端口
+    targetPort: 8000 # 容器端口
+  type: LoadBalancer

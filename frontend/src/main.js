@@ -33,6 +33,7 @@ app.config.productionTip = false
 app.config.globalProperties.$axios = axios;
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:8000'
+// axios.defaults.baseURL = '/proxy_url';
 app.mount('#app')
 Object.keys(ElIcon).forEach((key) => {
   app.component(key, ElIcon[key])
